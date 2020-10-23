@@ -1,5 +1,5 @@
 module "vms_debian" {
-  source = "${path.module}./vm_with_fip"
+  source = "${path.module}/vm_with_fip"
   
   counter   = 3
   name      = "Beermann"
@@ -13,7 +13,7 @@ module "vms_debian" {
 }
 
 module "vms_centos" {
-  source = "${path.module}./vm_with_fip"
+  source = "${path.module}/vm_with_fip"
   
   counter   = 3
   name      = "Beermann"
@@ -27,7 +27,7 @@ module "vms_centos" {
 }
 
 module "vms_opensuse" {
-  source = "${path.module}./vm_with_fip"
+  source = "${path.module}/vm_with_fip"
   
   counter   = 3
   name      = "Beermann"
