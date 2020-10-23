@@ -1,7 +1,7 @@
 module "vms_debian" {
   source = "./vm_with_fip"
   
-  counter   = 0
+  counter   = 3
   name      = "Beermann"
   flavor    = "1C-1GB-10GB"
   image     = "Debian 10"
@@ -15,7 +15,7 @@ module "vms_debian" {
 module "vms_centos" {
   source = "./vm_with_fip"
   
-  counter   = 0
+  counter   = 3
   name      = "Beermann"
   flavor    = "1C-1GB-10GB"
   image     = "CentOS 8"
@@ -29,7 +29,7 @@ module "vms_centos" {
 module "vms_opensuse" {
   source = "./vm_with_fip"
   
-  counter   = 0
+  counter   = 3
   name      = "Beermann"
   flavor    = "1C-1GB-10GB"
   image     = "openSUSE Leap 15.2"
