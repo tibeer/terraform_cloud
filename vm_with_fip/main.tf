@@ -19,6 +19,6 @@ resource "openstack_networking_floatingip_v2" "fip" {
 
 resource "openstack_compute_floatingip_associate_v2" "fip" {
   floating_ip = element(openstack_networking_floatingip_v2.fip.*.address, var.counter)
-  instance_id = element(openstack_compute_instance_v2.test.*.id, var.counter)
+  instance_id = element(openstack_compute_instance_v2.vm_with_fip.*.id, var.counter)
   count       = var.counter
 }
