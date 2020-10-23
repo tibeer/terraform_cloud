@@ -1,3 +1,3 @@
 variable "counter" {
-  default = 0
+  default = 1
 }
