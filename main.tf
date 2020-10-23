@@ -1,25 +1,42 @@
-resource "openstack_compute_instance_v2" "test" {
-  name              = "beermann-terraform-cloud-test"
-  flavor_name       = "1C-1GB-10GB"
-  image_name        = "Debian 10"
-  key_pair          = "default"
-  availability_zone = "south-2"
-  count             = var.counter
-
-  security_groups = ["ssh"]
-
-  network {
-    name = "net-to-external-common-sandbox"
-  }
+module "vms_debian" {
+  source = "${path.module}./vm_with_fip"
+  
+  counter   = 3
+  name      = "Beermann"
+  flavor    = "1C-1GB-10GB"
+  image     = "Debian 10"
+  keypair   = "default"
+  zone      = "south-2"
+  secgroups = ["ssh"]
+  network   = "net-to-external-common-sandbox"
+  pool      = "external"
 }
 
-resource "openstack_networking_floatingip_v2" "fip" {
-  pool  = "external"
-  count = var.counter
+module "vms_centos" {
+  source = "${path.module}./vm_with_fip"
+  
+  counter   = 3
+  name      = "Beermann"
+  flavor    = "1C-1GB-10GB"
+  image     = "CentOS 8"
+  keypair   = "default"
+  zone      = "south-2"
+  secgroups = ["ssh"]
+  network   = "net-to-external-common-sandbox"
+  pool      = "external"
 }
 
-resource "openstack_compute_floatingip_associate_v2" "fip" {
-  floating_ip = element(openstack_networking_floatingip_v2.fip.*.address, var.counter)
-  instance_id = element(openstack_compute_instance_v2.test.*.id, var.counter)
-  count       = var.counter
+module "vms_opensuse" {
+  source = "${path.module}./vm_with_fip"
+  
+  counter   = 3
+  name      = "Beermann"
+  flavor    = "1C-1GB-10GB"
+  image     = "openSUSE Leap 15.2"
+  keypair   = "default"
+  zone      = "south-2"
+  secgroups = ["ssh"]
+  network   = "net-to-external-common-sandbox"
+  pool      = "external"
 }
+

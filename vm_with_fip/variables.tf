@@ -1,0 +1,9 @@
+variable "counter" {}
+variable "name" {}
+variable "flavor" {}
+variable "image" {}
+variable "keypair" {}
+variable "zone" {}
+variable "secgroups" {}
+variable "network" {}
+variable "pool" {}
