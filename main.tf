@@ -1,7 +1,7 @@
 module "vms_debian" {
   source = "./vm_with_fip"
   
-  counter   = 0
+  counter   = 1
   name      = "Beermann"
   flavor    = "1C-1GB-10GB"
   image     = "Debian 10"
