@@ -1,0 +1,59 @@
+---
+image: docker:19.03.8
+
+stages:
+  - images
+  - terraform-format
+  - terraform-apply
+
+# permissions to clone private repo and workaround to clone via ssh
+# see also https://wiki.intern.b1-systems.de/knowledgebase:gitlab
+# - base64 encoded $SSH_PRIV_TRAINING_CI has to be added as a masked environment variable
+before_script:
+  - which ssh || apk add openssh
+  - which git || apk add git
+  - which bash || apk add bash
+  - which make || apk add make
+  - eval $(ssh-agent -s)
+  - echo -e "${SSH_PRIV_TRAINING_CI}" | base64 -d | tr -d '\r' | ssh-add -
+  - mkdir -p ~/.ssh
+  - chmod 700 ~/.ssh
+  - touch ~/.ssh/id_rsa
+  - ssh-keyscan git.intern.b1-systems.de >> ~/.ssh/known_hosts
+  - chmod 644 ~/.ssh/known_hosts
+  # do the actual checkout, be sure to pass GIT_STRATEGY=none via variable or runner
+  - cd "${CI_BUILDS_DIR}"
+  - rm -rf "${CI_PROJECT_DIR}"
+  - mkdir -p "${CI_BUILDS_DIR}/${CI_PROJECT_NAMESPACE}"
+  - git clone "git@${CI_SERVER_HOST}:${CI_PROJECT_PATH}.git" --depth 50 --single-branch --branch "${CI_COMMIT_BRANCH}" "${CI_PROJECT_DIR}"
+  - cd "${CI_PROJECT_DIR}"
+
+# build ci image
+test-image:
+  stage: images
+  tags:
+    - terraform-ci
+  script:
+    - make registry-login
+    - make build-test-image
+    - make tag-ci-image
+    - make push-ci-image
+  # to prevent failure on "internet access" problems
+  retry: 2
+  timeout: 1m
+
+terraform-format:
+  stage: terraform-format
+  image: localhost:5000/ci-b1-etraining
+  tags:
+    - terraform-ci
+  script:
+    - make terraform-format
+
+terraform-apply:
+  stage: terraform-apply
+  image: localhost:5000/ci-b1-etraining
+  tags:
+    - terraform-ci
+  script:
+    - make terraform-apply
